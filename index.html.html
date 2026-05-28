@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🐰 Bunny Bites — Cute Little Eats</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fredoka+One&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --cream:    #FFF5EC;
+    --pink:     #FFB8C8;
+    --pink-d:   #FF8FAD;
+    --mint:     #B8F0D5;
+    --mint-d:   #72D9A8;
+    --lavender: #DEB8F5;
+    --yellow:   #FFE6A0;
+    --yellow-d: #FFCA44;
+    --peach:    #FFD1A8;
+    --text:     #4A2E3A;
+    --muted:    #9B7080;
+    --white:    #FFFFFF;
+    --radius-pill: 999px;
+    --radius-card: 24px;
+    --shadow: 0 6px 24px rgba(180,100,130,0.10);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  /* offset for sticky nav when jumping to anchors */
+  [id] { scroll-margin-top: 80px; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(255,245,236,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 2px dashed var(--pink);
+    padding: 0 2rem;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 1rem; height: 68px;
+  }
+  .nav-logo {
+    display: flex; align-items: center; gap: 10px;
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.6rem; color: var(--pink-d);
+    text-decoration: none; white-space: nowrap;
+  }
+  .nav-links {
+    display: flex; align-items: center; gap: 4px;
+    list-style: none; flex-wrap: wrap;
+  }
+  .nav-links a {
+    display: block; padding: 6px 14px;
+    border-radius: var(--radius-pill);
+    font-weight: 700; font-size: 0.85rem;
+    color: var(--text); text-decoration: none;
+    transition: background .2s, color .2s;
+    white-space: nowrap;
+  }
+  .nav-links a:hover, .nav-links a.active {
+    background: var(--pink); color: var(--white);
+  }
+  .nav-links a.promo-link {
+    background: var(--yellow); color: var(--text);
+  }
+  .nav-links a.promo-link:hover {
+    background: var(--yellow-d);
+  }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 82vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center; padding: 3rem 2rem;
+    position: relative; overflow: hidden;
+  }
+  .hero-bg-dots {
+    position: absolute; inset: 0; z-index: 0;
+    background-image: radial-gradient(circle, var(--pink) 1.5px, transparent 1.5px);
+    background-size: 36px 36px; opacity: .3;
+  }
+  .hero-content { position: relative; z-index: 1; }
+  .hero-badge {
+    display: inline-block;
+    background: var(--yellow); color: var(--text);
+    font-weight: 800; font-size: 0.8rem;
+    padding: 6px 18px; border-radius: var(--radius-pill);
+    border: 2px solid var(--yellow-d);
+    margin-bottom: 1.2rem; letter-spacing: .04em;
+    text-transform: uppercase;
+  }
+  .hero h1 {
+    font-family: 'Fredoka One', cursive;
+    font-size: clamp(2.6rem, 7vw, 4.8rem);
+    color: var(--text); line-height: 1.1;
+    margin-bottom: .6rem;
+  }
+  .hero h1 span { color: var(--pink-d); }
+  .hero p {
+    font-size: 1.1rem; color: var(--muted);
+    font-weight: 600; max-width: 440px; margin: 0 auto 2rem;
+  }
+  .hero-cta {
+    display: inline-block;
+    background: var(--pink-d); color: var(--white);
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.2rem; padding: 14px 36px;
+    border-radius: var(--radius-pill);
+    text-decoration: none;
+    box-shadow: 0 4px 16px rgba(255,100,140,.30);
+    transition: transform .2s, box-shadow .2s;
+  }
+  .hero-cta:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(255,100,140,.40); }
+
+  .hero-bunny-row {
+    display: flex; gap: 2rem; justify-content: center;
+    margin-top: 2.5rem; flex-wrap: wrap;
+  }
+
+  /* floating decoration bunnies */
+  .float-bunny {
+    position: absolute; opacity: .18; z-index: 0;
+    animation: floatY 5s ease-in-out infinite;
+  }
+  .float-bunny:nth-child(2) { animation-delay: 1.2s; }
+  .float-bunny:nth-child(3) { animation-delay: 2.5s; }
+  @keyframes floatY {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-14px); }
+  }
+
+  /* ── SECTION COMMON ── */
+  section { padding: 5rem 2rem; }
+  .section-title {
+    text-align: center; margin-bottom: 2.5rem;
+  }
+  .section-title h2 {
+    font-family: 'Fredoka One', cursive;
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    color: var(--text);
+  }
+  .section-title .pill-tag {
+    display: inline-block;
+    padding: 4px 16px; border-radius: var(--radius-pill);
+    font-size: 0.78rem; font-weight: 800;
+    text-transform: uppercase; letter-spacing: .06em;
+    margin-bottom: .6rem;
+  }
+
+  /* ── PROMO ── */
+  #promotion {
+    background: linear-gradient(135deg, #FFB8C8 0%, #FFE6A0 60%, #B8F0D5 100%);
+    border-radius: 40px; margin: 0 1.5rem;
+    padding: 4rem 2rem;
+  }
+  .promo-grid {
+    max-width: 900px; margin: 0 auto;
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.2rem;
+  }
+  .promo-card {
+    background: rgba(255,255,255,.75);
+    backdrop-filter: blur(8px);
+    border-radius: 20px; padding: 1.5rem;
+    border: 2px dashed rgba(255,100,140,.25);
+    display: flex; align-items: center; gap: 1rem;
+    transition: transform .2s;
+  }
+  .promo-card:hover { transform: translateY(-4px); }
+  .promo-icon {
+    width: 60px; height: 60px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; font-size: 1.8rem;
+  }
+  .promo-card h3 {
+    font-family: 'Fredoka One', cursive; font-size: 1.1rem; color: var(--text);
+  }
+  .promo-card p { font-size: .85rem; color: var(--muted); font-weight: 600; margin-top: 2px; }
+  .promo-price {
+    margin-top: 6px;
+    font-family: 'Fredoka One', cursive;
+    color: var(--pink-d); font-size: 1.3rem;
+  }
+  .promo-price s { color: var(--muted); font-size: .85rem; font-family: 'Nunito', sans-serif; margin-left: 4px; }
+
+  /* ── MENU GRID ── */
+  .menu-section { max-width: 1100px; margin: 0 auto; }
+  .menu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+  .menu-card {
+    background: var(--white);
+    border-radius: var(--radius-card);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    transition: transform .25s, box-shadow .25s;
+    cursor: pointer;
+  }
+  .menu-card:hover {
+    transform: translateY(-6px) scale(1.01);
+    box-shadow: 0 16px 40px rgba(180,100,130,.18);
+  }
+  .card-art {
+    width: 100%; aspect-ratio: 4/3;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+  }
+  .card-art svg { width: 85%; height: 85%; }
+  .card-body { padding: 1.2rem 1.4rem 1.4rem; }
+  .card-body h3 {
+    font-family: 'Fredoka One', cursive; font-size: 1.25rem;
+    color: var(--text); margin-bottom: 4px;
+  }
+  .card-body p { font-size: .88rem; color: var(--muted); font-weight: 600; line-height: 1.5; }
+  .card-footer {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-top: 1rem;
+  }
+  .price-tag {
+    font-family: 'Fredoka One', cursive; font-size: 1.4rem;
+    color: var(--pink-d);
+  }
+  .add-btn {
+    background: var(--pink-d); color: var(--white);
+    border: none; cursor: pointer;
+    font-family: 'Fredoka One', cursive; font-size: 1rem;
+    padding: 8px 20px; border-radius: var(--radius-pill);
+    transition: background .2s, transform .15s;
+  }
+  .add-btn:hover { background: #FF6A94; transform: scale(1.06); }
+  .tag-badge {
+    display: inline-block; font-size: .7rem; font-weight: 800;
+    padding: 3px 10px; border-radius: var(--radius-pill);
+    margin-bottom: 6px; text-transform: uppercase; letter-spacing: .05em;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--text); color: rgba(255,245,236,.85);
+    text-align: center; padding: 3rem 2rem;
+  }
+  footer .footer-logo {
+    font-family: 'Fredoka One', cursive;
+    font-size: 2rem; color: var(--pink);
+    margin-bottom: .5rem;
+  }
+  footer p { font-size: .9rem; font-weight: 600; opacity: .7; }
+  footer .footer-links {
+    display: flex; justify-content: center; gap: 1.5rem;
+    flex-wrap: wrap; margin-top: 1rem;
+  }
+  footer .footer-links a {
+    color: var(--mint); font-weight: 700; font-size: .88rem;
+    text-decoration: none; opacity: .85;
+  }
+  footer .footer-links a:hover { opacity: 1; }
+
+  /* ── DIVIDER ── */
+  .paw-divider {
+    text-align: center; font-size: 1.4rem; letter-spacing: 8px;
+    color: var(--pink); opacity: .5; margin: 0 0 2.5rem;
+  }
+
+  /* ── SCROLL REVEAL ── */
+  .reveal { opacity: 0; transform: translateY(32px); transition: opacity .55s ease, transform .55s ease; }
+  .reveal.visible { opacity: 1; transform: none; }
+
+  @media (max-width: 600px) {
+    nav { padding: 0 1rem; }
+    .nav-links { gap: 2px; }
+    .nav-links a { font-size: .75rem; padding: 5px 10px; }
+    section { padding: 3.5rem 1rem; }
+    #promotion { margin: 0 .5rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav>
+  <a href="#" class="nav-logo">
+    <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+      <!-- bunny face logo -->
+      <ellipse cx="18" cy="22" rx="12" ry="10" fill="#FFB8C8"/>
+      <!-- ears -->
+      <ellipse cx="11" cy="9" rx="3.5" ry="8" fill="#FFB8C8"/>
+      <ellipse cx="25" cy="9" rx="3.5" ry="8" fill="#FFB8C8"/>
+      <ellipse cx="11" cy="9" rx="2" ry="5.5" fill="#FF8FAD"/>
+      <ellipse cx="25" cy="9" rx="2" ry="5.5" fill="#FF8FAD"/>
+      <!-- eyes -->
+      <circle cx="13.5" cy="21" r="2" fill="#4A2E3A"/>
+      <circle cx="22.5" cy="21" r="2" fill="#4A2E3A"/>
+      <circle cx="14.2" cy="20.3" r=".7" fill="white"/>
+      <circle cx="23.2" cy="20.3" r=".7" fill="white"/>
+      <!-- nose -->
+      <ellipse cx="18" cy="25" rx="1.5" ry="1" fill="#FF8FAD"/>
+      <!-- mouth -->
+      <path d="M15.5 26.5 Q18 28.5 20.5 26.5" stroke="#4A2E3A" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+      <!-- cheeks -->
+      <ellipse cx="11.5" cy="24.5" rx="2.5" ry="1.5" fill="#FFD0DC" opacity=".6"/>
+      <ellipse cx="24.5" cy="24.5" rx="2.5" ry="1.5" fill="#FFD0DC" opacity=".6"/>
+    </svg>
+    Bunny Bites
+  </a>
+  <ul class="nav-links">
+    <li><a href="#promotion" class="promo-link">🎉 Promo</a></li>
+    <li><a href="#croissant">🥐 Croissant</a></li>
+    <li><a href="#burger">🍔 Burger</a></li>
+    <li><a href="#fish">🐟 Fish</a></li>
+    <li><a href="#chicken">🍗 Chicken</a></li>
+    <li><a href="#rice">🍚 Rice Bowl</a></li>
+  </ul>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <div class="hero-bg-dots"></div>
+
+  <!-- floating decoration bunnies -->
+  <svg class="float-bunny" style="top:8%;left:5%;width:90px" viewBox="0 0 60 60">
+    <ellipse cx="30" cy="38" rx="16" ry="13" fill="#FFB8C8"/>
+    <ellipse cx="22" cy="16" rx="5" ry="10" fill="#FFB8C8"/><ellipse cx="22" cy="16" rx="3" ry="7" fill="#FF8FAD"/>
+    <ellipse cx="38" cy="16" rx="5" ry="10" fill="#FFB8C8"/><ellipse cx="38" cy="16" rx="3" ry="7" fill="#FF8FAD"/>
+    <circle cx="25" cy="36" r="2.5" fill="#4A2E3A"/><circle cx="35" cy="36" r="2.5" fill="#4A2E3A"/>
+    <ellipse cx="30" cy="41" rx="2" ry="1.2" fill="#FF8FAD"/>
+  </svg>
+  <svg class="float-bunny" style="top:15%;right:7%;width:70px" viewBox="0 0 60 60">
+    <ellipse cx="30" cy="38" rx="16" ry="13" fill="#DEB8F5"/>
+    <ellipse cx="22" cy="16" rx="5" ry="10" fill="#DEB8F5"/><ellipse cx="22" cy="16" rx="3" ry="7" fill="#C890EE"/>
+    <ellipse cx="38" cy="16" rx="5" ry="10" fill="#DEB8F5"/><ellipse cx="38" cy="16" rx="3" ry="7" fill="#C890EE"/>
+    <circle cx="25" cy="36" r="2.5" fill="#4A2E3A"/><circle cx="35" cy="36" r="2.5" fill="#4A2E3A"/>
+    <ellipse cx="30" cy="41" rx="2" ry="1.2" fill="#C890EE"/>
+  </svg>
+  <svg class="float-bunny" style="bottom:12%;left:9%;width:75px" viewBox="0 0 60 60">
+    <ellipse cx="30" cy="38" rx="16" ry="13" fill="#B8F0D5"/>
+    <ellipse cx="22" cy="16" rx="5" ry="10" fill="#B8F0D5"/><ellipse cx="22" cy="16" rx="3" ry="7" fill="#72D9A8"/>
+    <ellipse cx="38" cy="16" rx="5" ry="10" fill="#B8F0D5"/><ellipse cx="38" cy="16" rx="3" ry="7" fill="#72D9A8"/>
+    <circle cx="25" cy="36" r="2.5" fill="#4A2E3A"/><circle cx="35" cy="36" r="2.5" fill="#4A2E3A"/>
+    <ellipse cx="30" cy="41" rx="2" ry="1.2" fill="#72D9A8"/>
+  </svg>
+
+  <div class="hero-content reveal">
+    <div class="hero-badge">🐰 Fresh &amp; Yummy Every Day</div>
+    <h1>Fluffy Good,<br><span>Bunny Fresh!</span></h1>
+    <p>Simple, cute, and oh-so-delicious bites made with love — just like a bunny would.</p>
+    <a href="#promotion" class="hero-cta">See Today's Deals 🎉</a>
+
+    <div class="hero-bunny-row">
+      <!-- chef bunny SVG illustration -->
+      <svg width="200" height="220" viewBox="0 0 200 220" fill="none">
+        <!-- chef hat -->
+        <rect x="68" y="20" width="64" height="40" rx="10" fill="white" stroke="#E0D0D5" stroke-width="1.5"/>
+        <rect x="60" y="50" width="80" height="16" rx="8" fill="white" stroke="#E0D0D5" stroke-width="1.5"/>
+        <ellipse cx="100" cy="18" rx="24" ry="10" fill="white" stroke="#E0D0D5" stroke-width="1.5"/>
+        <!-- bunny ears behind hat -->
+        <ellipse cx="78" cy="28" rx="10" ry="22" fill="#FFB8C8"/>
+        <ellipse cx="122" cy="28" rx="10" ry="22" fill="#FFB8C8"/>
+        <ellipse cx="78" cy="28" rx="6" ry="16" fill="#FF8FAD"/>
+        <ellipse cx="122" cy="28" rx="6" ry="16" fill="#FF8FAD"/>
+        <!-- body -->
+        <ellipse cx="100" cy="155" rx="46" ry="52" fill="#FFB8C8"/>
+        <!-- chef apron -->
+        <ellipse cx="100" cy="160" rx="30" ry="40" fill="white" opacity=".8"/>
+        <rect x="88" y="140" width="24" height="6" rx="3" fill="white"/>
+        <!-- arms -->
+        <ellipse cx="52" cy="148" rx="10" ry="28" fill="#FFB8C8" transform="rotate(-15 52 148)"/>
+        <ellipse cx="148" cy="148" rx="10" ry="28" fill="#FFB8C8" transform="rotate(15 148 148)"/>
+        <!-- paws holding food tray -->
+        <rect x="28" y="168" width="50" height="8" rx="4" fill="#FFD1A8"/>
+        <rect x="122" y="168" width="50" height="8" rx="4" fill="#FFD1A8"/>
+        <!-- food tray -->
+        <rect x="55" y="160" width="90" height="12" rx="6" fill="#FFE6A0" stroke="#FFCA44" stroke-width="1.5"/>
+        <!-- little food on tray -->
+        <circle cx="76" cy="158" r="8" fill="#FF8FAD"/>
+        <circle cx="100" cy="157" r="9" fill="#FFCA44"/>
+        <circle cx="124" cy="158" r="8" fill="#72D9A8"/>
+        <!-- bunny face -->
+        <ellipse cx="100" cy="98" rx="28" ry="26" fill="#FFB8C8"/>
+        <!-- eyes -->
+        <circle cx="91" cy="95" r="4" fill="#4A2E3A"/>
+        <circle cx="109" cy="95" r="4" fill="#4A2E3A"/>
+        <circle cx="92.5" cy="93.5" r="1.5" fill="white"/>
+        <circle cx="110.5" cy="93.5" r="1.5" fill="white"/>
+        <!-- nose -->
+        <ellipse cx="100" cy="102" rx="3" ry="2" fill="#FF8FAD"/>
+        <!-- smile -->
+        <path d="M94 107 Q100 113 106 107" stroke="#4A2E3A" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+        <!-- cheeks -->
+        <ellipse cx="86" cy="102" rx="5" ry="3" fill="#FFD0DC" opacity=".7"/>
+        <ellipse cx="114" cy="102" rx="5" ry="3" fill="#FFD0DC" opacity=".7"/>
+        <!-- bow tie -->
+        <polygon points="86,122 96,128 86,134" fill="#DEB8F5"/>
+        <polygon points="114,122 104,128 114,134" fill="#DEB8F5"/>
+        <circle cx="100" cy="128" r="4" fill="#C890EE"/>
+        <!-- legs/feet -->
+        <ellipse cx="78" cy="202" rx="18" ry="10" fill="#FFB8C8"/>
+        <ellipse cx="122" cy="202" rx="18" ry="10" fill="#FFB8C8"/>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- ── PROMOTION ── -->
+<section id="promotion">
+  <div class="section-title reveal">
+    <div class="pill-tag" style="background:var(--yellow);color:var(--text)">🎉 Today's Specials</div>
+    <h2>Hoppy Promotions!</h2>
+  </div>
+  <div class="paw-divider reveal">🐾 · · 🐾 · · 🐾</div>
+  <div class="promo-grid reveal">
+    <div class="promo-card">
+      <div class="promo-icon" style="background:var(--yellow)">🥐</div>
+      <div>
+        <h3>Morning Bunny Set</h3>
+        <p>Croissant + Hot Drink combo</p>
+        <div class="promo-price">RM 9.90 <s>RM 14.90</s></div>
+      </div>
+    </div>
+    <div class="promo-card">
+      <div class="promo-icon" style="background:var(--pink)">🍔</div>
+      <div>
+        <h3>Bunny Double Up</h3>
+        <p>Any Burger + Fries + Drink</p>
+        <div class="promo-price">RM 16.90 <s>RM 21.90</s></div>
+      </div>
+    </div>
+    <div class="promo-card">
+      <div class="promo-icon" style="background:var(--mint)">🍚</div>
+      <div>
+        <h3>Lunch Rice Set</h3>
+        <p>Rice Bowl + Soup + Dessert</p>
+        <div class="promo-price">RM 13.50 <s>RM 18.00</s></div>
+      </div>
+    </div>
+    <div class="promo-card">
+      <div class="promo-icon" style="background:var(--lavender)">🐰</div>
+      <div>
+        <h3>Family Bundle</h3>
+        <p>4 meals + 4 drinks + a hug</p>
+        <div class="promo-price">RM 55.00 <s>RM 72.00</s></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── MENU ── -->
+<section style="padding:5rem 2rem">
+  <div class="section-title reveal">
+    <div class="pill-tag" style="background:var(--mint);color:#1A6040">🍽️ Our Menu</div>
+    <h2>What's Cooking Today?</h2>
+  </div>
+  <div class="paw-divider reveal">🌸 · · 🌸 · · 🌸</div>
+
+  <div class="menu-section">
+    <div class="menu-grid">
+
+      <!-- CROISSANT -->
+      <div class="menu-card reveal" id="croissant">
+        <div class="card-art" style="background:#FFF3D6">
+          <svg viewBox="0 0 200 160" fill="none">
+            <!-- plate -->
+            <ellipse cx="100" cy="130" rx="70" ry="14" fill="#F0E8C8" opacity=".6"/>
+            <!-- croissant body -->
+            <path d="M60 80 Q55 50 80 42 Q100 36 120 42 Q145 50 140 80 Q130 105 100 110 Q70 105 60 80Z" fill="#E8A84A"/>
+            <!-- layers/texture -->
+            <path d="M65 80 Q62 58 82 50 Q100 44 118 50 Q138 58 135 80" stroke="#C87830" stroke-width="2" fill="none" opacity=".5"/>
+            <path d="M68 75 Q66 60 84 53 Q100 48 116 53 Q132 60 132 75" stroke="#C87830" stroke-width="1.5" fill="none" opacity=".35"/>
+            <!-- sheen -->
+            <path d="M80 48 Q100 42 118 50" stroke="#F0C060" stroke-width="3" stroke-linecap="round" opacity=".6"/>
+            <!-- left tip -->
+            <path d="M60 80 Q42 88 38 76 Q36 64 58 70Z" fill="#D99040"/>
+            <!-- right tip -->
+            <path d="M140 80 Q158 88 162 76 Q164 64 142 70Z" fill="#D99040"/>
+            <!-- butter pat -->
+            <rect x="88" y="96" width="24" height="8" rx="4" fill="#FFE880" opacity=".8"/>
+            <!-- bunny ears on croissant -->
+            <ellipse cx="88" cy="36" rx="5" ry="9" fill="#FFB8C8" opacity=".9"/>
+            <ellipse cx="88" cy="36" rx="3" ry="6" fill="#FF8FAD" opacity=".8"/>
+            <ellipse cx="112" cy="36" rx="5" ry="9" fill="#FFB8C8" opacity=".9"/>
+            <ellipse cx="112" cy="36" rx="3" ry="6" fill="#FF8FAD" opacity=".8"/>
+            <!-- eyes on croissant -->
+            <circle cx="93" cy="72" r="3.5" fill="#4A2E3A"/>
+            <circle cx="107" cy="72" r="3.5" fill="#4A2E3A"/>
+            <circle cx="94.2" cy="70.8" r="1.2" fill="white"/>
+            <circle cx="108.2" cy="70.8" r="1.2" fill="white"/>
+            <!-- smile -->
+            <path d="M96 80 Q100 84 104 80" stroke="#4A2E3A" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="card-body">
+          <div class="tag-badge" style="background:#FFF3D6;color:#C87830">🥐 Bakery</div>
+          <h3>Buttery Croissant</h3>
+          <p>Flaky, golden, and warm from the oven. Served plain or with our house jam.</p>
+          <div class="card-footer">
+            <span class="price-tag">RM 5.50</span>
+            <button class="add-btn">Add +</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- BURGER -->
+      <div class="menu-card reveal" id="burger">
+        <div class="card-art" style="background:#FFF0E8">
+          <svg viewBox="0 0 200 160" fill="none">
+            <!-- shadow -->
+            <ellipse cx="100" cy="148" rx="55" ry="8" fill="#E8C8A8" opacity=".4"/>
+            <!-- bottom bun -->
+            <ellipse cx="100" cy="128" rx="55" ry="14" fill="#D4922A"/>
+            <ellipse cx="100" cy="116" rx="55" ry="14" fill="#E8A840"/>
+            <!-- lettuce -->
+            <path d="M50 104 Q60 94 72 100 Q82 92 94 100 Q106 92 118 100 Q130 94 150 104" stroke="#4AAA60" stroke-width="7" fill="none" stroke-linecap="round"/>
+            <!-- tomato -->
+            <rect x="58" y="92" width="84" height="12" rx="6" fill="#E84040" opacity=".85"/>
+            <!-- patty -->
+            <rect x="54" y="76" width="92" height="20" rx="10" fill="#8B4820"/>
+            <!-- cheese -->
+            <rect x="50" y="68" width="100" height="12" rx="4" fill="#F4C030"/>
+            <polygon points="50,68 46,80 50,80" fill="#F4C030"/>
+            <polygon points="150,68 154,80 150,80" fill="#F4C030"/>
+            <!-- top bun -->
+            <ellipse cx="100" cy="60" rx="55" ry="22" fill="#E8A840"/>
+            <ellipse cx="100" cy="50" rx="50" ry="18" fill="#D4922A"/>
+            <!-- sesame seeds -->
+            <ellipse cx="82" cy="46" rx="4" ry="2.5" fill="#FFF0C0" transform="rotate(-20 82 46)"/>
+            <ellipse cx="100" cy="40" rx="4" ry="2.5" fill="#FFF0C0"/>
+            <ellipse cx="118" cy="46" rx="4" ry="2.5" fill="#FFF0C0" transform="rotate(20 118 46)"/>
+            <!-- bunny ears -->
+            <ellipse cx="82" cy="22" rx="7" ry="14" fill="#FFB8C8"/>
+            <ellipse cx="82" cy="22" rx="4" ry="10" fill="#FF8FAD"/>
+            <ellipse cx="118" cy="22" rx="7" ry="14" fill="#FFB8C8"/>
+            <ellipse cx="118" cy="22" rx="4" ry="10" fill="#FF8FAD"/>
+            <!-- eyes on bun -->
+            <circle cx="88" cy="53" r="3.5" fill="#4A2E3A"/>
+            <circle cx="112" cy="53" r="3.5" fill="#4A2E3A"/>
+            <circle cx="89.2" cy="51.8" r="1.2" fill="white"/>
+            <circle cx="113.2" cy="51.8" r="1.2" fill="white"/>
+            <!-- smile -->
+            <path d="M94 60 Q100 65 106 60" stroke="#4A2E3A" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+            <!-- cheeks -->
+            <ellipse cx="82" cy="57" rx="4" ry="2.5" fill="#FFD0DC" opacity=".6"/>
+            <ellipse cx="118" cy="57" rx="4" ry="2.5" fill="#FFD0DC" opacity=".6"/>
+          </svg>
+        </div>
+        <div class="card-body">
+          <div class="tag-badge" style="background:#FFF0E8;color:#C85010">🍔 Grill</div>
+          <h3>Bunny Smash Burger</h3>
+          <p>Juicy patty, crisp lettuce, melted cheddar & our secret pink sauce.</p>
+          <div class="card-footer">
+            <span class="price-tag">RM 14.90</span>
+            <button class="add-btn">Add +</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- FISH -->
+      <div class="menu-card reveal" id="fish">
+        <div class="card-art" style="background:#E8F8FF">
+          <svg viewBox="0 0 200 160" fill="none">
+            <!-- plate -->
+            <ellipse cx="100" cy="138" rx="65" ry="12" fill="#C8E8F8" opacity=".5"/>
+            <!-- plate base -->
+            <ellipse cx="100" cy="128" rx="65" ry="18" fill="#EAF6FF"/>
+            <ellipse cx="100" cy="122" rx="58" ry="14" fill="white" opacity=".7"/>
+            <!-- lemon slices -->
+            <circle cx="150" cy="118" r="12" fill="#FFF080"/>
+            <path d="M150 106 L150 130 M138 118 L162 118" stroke="#E8D040" stroke-width="1" opacity=".6"/>
+            <circle cx="58" cy="120" r="10" fill="#FFF080" opacity=".8"/>
+            <!-- parsley -->
+            <circle cx="40" cy="112" r="8" fill="#4AAA50"/>
+            <circle cx="50" cy="108" r="7" fill="#5ABA60"/>
+            <circle cx="42" cy="104" r="6" fill="#4AAA50"/>
+            <!-- fish body -->
+            <path d="M70 90 Q100 60 140 80 Q160 88 155 102 Q148 118 120 115 Q90 118 70 105 Q52 96 70 90Z" fill="#6EC0E0"/>
+            <!-- fish scales -->
+            <path d="M90 80 Q96 74 102 80" stroke="#50A0C0" stroke-width="1.5" fill="none"/>
+            <path d="M104 78 Q110 72 116 78" stroke="#50A0C0" stroke-width="1.5" fill="none"/>
+            <path d="M85 90 Q91 84 97 90" stroke="#50A0C0" stroke-width="1.5" fill="none"/>
+            <path d="M99 88 Q105 82 111 88" stroke="#50A0C0" stroke-width="1.5" fill="none"/>
+            <path d="M113 86 Q119 80 125 86" stroke="#50A0C0" stroke-width="1.5" fill="none"/>
+            <!-- fish tail -->
+            <path d="M70 90 Q50 78 44 86 Q50 98 70 105Z" fill="#5AAAD0"/>
+            <!-- fish fin -->
+            <path d="M100 68 Q105 60 120 65 Q115 75 100 75Z" fill="#5AAAD0"/>
+            <!-- bunny ears on fish head -->
+            <ellipse cx="134" cy="74" rx="5" ry="11" fill="#FFB8C8"/>
+            <ellipse cx="134" cy="74" rx="3" ry="7.5" fill="#FF8FAD"/>
+            <ellipse cx="148" cy="72" rx="5" ry="11" fill="#FFB8C8"/>
+            <ellipse cx="148" cy="72" rx="3" ry="7.5" fill="#FF8FAD"/>
+            <!-- fish eye / bunny face on fish -->
+            <circle cx="140" cy="92" r="5" fill="white"/>
+            <circle cx="140" cy="92" r="3.5" fill="#4A2E3A"/>
+            <circle cx="141.2" cy="90.8" r="1.2" fill="white"/>
+            <!-- cheek -->
+            <ellipse cx="133" cy="97" rx="4" ry="2.5" fill="#FFD0DC" opacity=".65"/>
+            <!-- smile -->
+            <path d="M136 100 Q140 104 144 100" stroke="#4A2E3A" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="card-body">
+          <div class="tag-badge" style="background:#E8F8FF;color:#1A78A0">🐟 Seafood</div>
+          <h3>Crispy Fish Fillet</h3>
+          <p>Golden-fried fillet with tartar sauce, lemon & fresh greens on the side.</p>
+          <div class="card-footer">
+            <span class="price-tag">RM 16.90</span>
+            <button class="add-btn">Add +</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- CHICKEN CHOP -->
+      <div class="menu-card reveal" id="chicken">
+        <div class="card-art" style="background:#FFF5E0">
+          <svg viewBox="0 0 200 160" fill="none">
+            <!-- plate shadow -->
+            <ellipse cx="100" cy="148" rx="68" ry="10" fill="#D8C098" opacity=".35"/>
+            <!-- plate -->
+            <ellipse cx="100" cy="136" rx="68" ry="16" fill="#F0E8D0"/>
+            <ellipse cx="100" cy="128" rx="62" ry="12" fill="white" opacity=".7"/>
+            <!-- mashed potato side -->
+            <ellipse cx="60" cy="120" rx="22" ry="14" fill="#FFF0C0"/>
+            <path d="M40 120 Q60 110 80 120" stroke="#E8D880" stroke-width="2" fill="none"/>
+            <!-- broccoli -->
+            <circle cx="152" cy="112" r="10" fill="#3AAA50"/>
+            <circle cx="162" cy="108" r="8" fill="#4ABA60"/>
+            <circle cx="156" cy="104" r="8" fill="#3AAA50"/>
+            <rect x="155" y="118" width="4" height="12" fill="#2A8840"/>
+            <!-- gravy sauce -->
+            <ellipse cx="100" cy="115" rx="42" ry="10" fill="#8B4010" opacity=".3"/>
+            <!-- chicken chop bone handle -->
+            <rect x="90" y="102" width="20" height="32" rx="8" fill="#F0E0C0"/>
+            <ellipse cx="100" cy="100" rx="10" ry="6" fill="#E8D0A8"/>
+            <ellipse cx="100" cy="136" rx="8" ry="5" fill="#E8D0A8"/>
+            <!-- chicken body -->
+            <path d="M56 88 Q70 66 100 64 Q130 66 144 88 Q154 106 140 118 Q120 128 100 128 Q80 128 60 118 Q46 106 56 88Z" fill="#D4882A"/>
+            <!-- chicken texture/grill marks -->
+            <path d="M65 90 Q85 82 100 84 Q115 82 135 90" stroke="#B06818" stroke-width="3" opacity=".4" stroke-linecap="round"/>
+            <path d="M60 102 Q80 94 100 96 Q120 94 140 102" stroke="#B06818" stroke-width="3" opacity=".4" stroke-linecap="round"/>
+            <path d="M62 114 Q80 108 100 109 Q120 108 138 114" stroke="#B06818" stroke-width="2.5" opacity=".3" stroke-linecap="round"/>
+            <!-- herb garnish on chop -->
+            <circle cx="100" cy="78" r="5" fill="#4AAA50"/>
+            <circle cx="110" cy="75" r="4" fill="#3A9A40"/>
+            <!-- bunny ears -->
+            <ellipse cx="82" cy="50" rx="7" ry="14" fill="#FFB8C8"/>
+            <ellipse cx="82" cy="50" rx="4" ry="10" fill="#FF8FAD"/>
+            <ellipse cx="118" cy="50" rx="7" ry="14" fill="#FFB8C8"/>
+            <ellipse cx="118" cy="50" rx="4" ry="10" fill="#FF8FAD"/>
+            <!-- bunny face on chop -->
+            <circle cx="91" cy="84" r="3.5" fill="#4A2E3A"/>
+            <circle cx="109" cy="84" r="3.5" fill="#4A2E3A"/>
+            <circle cx="92.2" cy="82.8" r="1.2" fill="white"/>
+            <circle cx="110.2" cy="82.8" r="1.2" fill="white"/>
+            <ellipse cx="100" cy="92" rx="2.5" ry="1.5" fill="#FF8FAD"/>
+            <path d="M95 97 Q100 101 105 97" stroke="#4A2E3A" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+            <ellipse cx="86" cy="90" rx="4" ry="2.5" fill="#FFD0DC" opacity=".6"/>
+            <ellipse cx="114" cy="90" rx="4" ry="2.5" fill="#FFD0DC" opacity=".6"/>
+          </svg>
+        </div>
+        <div class="card-body">
+          <div class="tag-badge" style="background:#FFF5E0;color:#A05010">🍗 Grill</div>
+          <h3>Hoppy Chicken Chop</h3>
+          <p>Tender grilled chicken with black pepper gravy, mash & seasonal veggies.</p>
+          <div class="card-footer">
+            <span class="price-tag">RM 17.50</span>
+            <button class="add-btn">Add +</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- RICE BOWL -->
+      <div class="menu-card reveal" id="rice">
+        <div class="card-art" style="background:#F0FFF5">
+          <svg viewBox="0 0 200 160" fill="none">
+            <!-- bowl shadow -->
+            <ellipse cx="100" cy="150" rx="60" ry="8" fill="#A8C8A8" opacity=".3"/>
+            <!-- bowl outer -->
+            <path d="M42 98 Q44 140 100 148 Q156 140 158 98Z" fill="#E0D8F0"/>
+            <!-- bowl rim -->
+            <ellipse cx="100" cy="98" rx="58" ry="14" fill="#DEB8F5"/>
+            <ellipse cx="100" cy="98" rx="52" ry="10" fill="#C890EE" opacity=".4"/>
+            <!-- bowl inner -->
+            <path d="M48 98 Q50 136 100 144 Q150 136 152 98Z" fill="white"/>
+            <!-- rice base -->
+            <ellipse cx="100" cy="100" rx="48" ry="10" fill="#F8F4E0"/>
+            <!-- rice texture dots -->
+            <ellipse cx="80" cy="98" rx="3" ry="1.5" fill="white"/><ellipse cx="88" cy="94" rx="3" ry="1.5" fill="white"/>
+            <ellipse cx="100" cy="96" rx="3" ry="1.5" fill="white"/><ellipse cx="112" cy="94" rx="3" ry="1.5" fill="white"/>
+            <ellipse cx="120" cy="98" rx="3" ry="1.5" fill="white"/>
+            <ellipse cx="90" cy="102" rx="3" ry="1.5" fill="white"/><ellipse cx="108" cy="102" rx="3" ry="1.5" fill="white"/>
+            <!-- toppings: teriyaki chicken -->
+            <path d="M68 88 Q90 76 112 84 Q124 90 118 100 Q108 108 88 106 Q72 104 68 94Z" fill="#C07028"/>
+            <!-- sauce drizzle -->
+            <path d="M72 92 Q90 84 108 92" stroke="#8B4010" stroke-width="3" stroke-linecap="round" opacity=".5"/>
+            <!-- edamame / green toppings -->
+            <ellipse cx="128" cy="82" rx="7" ry="4" fill="#5AAA60"/>
+            <ellipse cx="136" cy="86" rx="6" ry="3.5" fill="#4A9A50"/>
+            <!-- sesame seeds -->
+            <ellipse cx="80" cy="82" rx="2" ry="1.2" fill="#F0E0A0" transform="rotate(-20 80 82)"/>
+            <ellipse cx="92" cy="78" rx="2" ry="1.2" fill="#F0E0A0"/>
+            <ellipse cx="104" cy="78" rx="2" ry="1.2" fill="#F0E0A0" transform="rotate(20 104 78)"/>
+            <!-- nori strip -->
+            <rect x="88" y="72" width="24" height="7" rx="3" fill="#1A3A1A" opacity=".8"/>
+            <!-- chopsticks -->
+            <line x1="150" y1="50" x2="120" y2="95" stroke="#C0A080" stroke-width="4" stroke-linecap="round"/>
+            <line x1="162" y1="54" x2="128" y2="98" stroke="#C0A080" stroke-width="4" stroke-linecap="round"/>
+            <!-- bunny peeking from bowl -->
+            <ellipse cx="100" cy="66" rx="18" ry="15" fill="#FFB8C8"/>
+            <ellipse cx="88" cy="50" rx="6" ry="12" fill="#FFB8C8"/>
+            <ellipse cx="88" cy="50" rx="3.5" ry="8" fill="#FF8FAD"/>
+            <ellipse cx="112" cy="50" rx="6" ry="12" fill="#FFB8C8"/>
+            <ellipse cx="112" cy="50" rx="3.5" ry="8" fill="#FF8FAD"/>
+            <circle cx="94" cy="64" r="3.5" fill="#4A2E3A"/>
+            <circle cx="106" cy="64" r="3.5" fill="#4A2E3A"/>
+            <circle cx="95.2" cy="62.8" r="1.2" fill="white"/>
+            <circle cx="107.2" cy="62.8" r="1.2" fill="white"/>
+            <ellipse cx="100" cy="70" rx="2" ry="1.4" fill="#FF8FAD"/>
+            <path d="M96 74 Q100 78 104 74" stroke="#4A2E3A" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+            <ellipse cx="88" cy="68" rx="4" ry="2.5" fill="#FFD0DC" opacity=".6"/>
+            <ellipse cx="112" cy="68" rx="4" ry="2.5" fill="#FFD0DC" opacity=".6"/>
+          </svg>
+        </div>
+        <div class="card-body">
+          <div class="tag-badge" style="background:#F0FFF5;color:#1A6040">🍚 Bowl</div>
+          <h3>Teriyaki Rice Bowl</h3>
+          <p>Fluffy steamed rice topped with glazed chicken, edamame & a sprinkle of sesame.</p>
+          <div class="card-footer">
+            <span class="price-tag">RM 13.90</span>
+            <button class="add-btn">Add +</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- BONUS: SEASONAL SPECIAL -->
+      <div class="menu-card reveal" style="background: linear-gradient(135deg,#FFF0F5,#F5EEFF)">
+        <div class="card-art" style="background:transparent;padding:1.5rem">
+          <svg viewBox="0 0 200 160" fill="none">
+            <!-- big bunny illustration centered -->
+            <ellipse cx="100" cy="148" rx="45" ry="8" fill="#FFB8C8" opacity=".25"/>
+            <!-- body -->
+            <ellipse cx="100" cy="120" rx="38" ry="42" fill="#DEB8F5"/>
+            <!-- tummy -->
+            <ellipse cx="100" cy="126" rx="22" ry="26" fill="#F0D8FF"/>
+            <!-- arms -->
+            <ellipse cx="64" cy="108" rx="9" ry="22" fill="#DEB8F5" transform="rotate(-10 64 108)"/>
+            <ellipse cx="136" cy="108" rx="9" ry="22" fill="#DEB8F5" transform="rotate(10 136 108)"/>
+            <!-- legs -->
+            <ellipse cx="82" cy="155" rx="16" ry="9" fill="#DEB8F5"/>
+            <ellipse cx="118" cy="155" rx="16" ry="9" fill="#DEB8F5"/>
+            <!-- tail -->
+            <circle cx="138" cy="130" r="10" fill="#F0D8FF"/>
+            <!-- ears -->
+            <ellipse cx="82" cy="56" rx="10" ry="22" fill="#DEB8F5"/>
+            <ellipse cx="82" cy="56" rx="6" ry="16" fill="#C890EE"/>
+            <ellipse cx="118" cy="56" rx="10" ry="22" fill="#DEB8F5"/>
+            <ellipse cx="118" cy="56" rx="6" ry="16" fill="#C890EE"/>
+            <!-- head -->
+            <ellipse cx="100" cy="86" rx="28" ry="26" fill="#DEB8F5"/>
+            <!-- eyes -->
+            <circle cx="90" cy="83" r="5" fill="#4A2E3A"/>
+            <circle cx="110" cy="83" r="5" fill="#4A2E3A"/>
+            <circle cx="91.5" cy="81.5" r="1.8" fill="white"/>
+            <circle cx="111.5" cy="81.5" r="1.8" fill="white"/>
+            <!-- nose -->
+            <ellipse cx="100" cy="90" rx="3" ry="2" fill="#FF8FAD"/>
+            <!-- big smile -->
+            <path d="M92 97 Q100 105 108 97" stroke="#4A2E3A" stroke-width="2" fill="none" stroke-linecap="round"/>
+            <!-- cheeks -->
+            <ellipse cx="84" cy="90" rx="6" ry="3.5" fill="#FFD0DC" opacity=".7"/>
+            <ellipse cx="116" cy="90" rx="6" ry="3.5" fill="#FFD0DC" opacity=".7"/>
+            <!-- holding star -->
+            <polygon points="100,20 104,32 116,32 106,40 110,52 100,44 90,52 94,40 84,32 96,32" fill="#FFE64A"/>
+            <circle cx="100" cy="36" r="8" fill="#FFF080" opacity=".5"/>
+            <!-- bow on head -->
+            <polygon points="86,68 96,74 86,80" fill="#FFB8C8"/>
+            <polygon points="114,68 104,74 114,80" fill="#FFB8C8"/>
+            <circle cx="100" cy="74" r="5" fill="#FF8FAD"/>
+          </svg>
+        </div>
+        <div class="card-body">
+          <div class="tag-badge" style="background:#F5EEFF;color:#7030A0">⭐ Chef's Special</div>
+          <h3>Bunny Mystery Box</h3>
+          <p>Let our chef surprise you! A special seasonal dish crafted just for today. 🐰✨</p>
+          <div class="card-footer">
+            <span class="price-tag">RM 12.00</span>
+            <button class="add-btn" style="background:var(--lavender);color:var(--text)">Surprise Me!</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="footer-logo">🐰 Bunny Bites</div>
+  <p>Made with love, fluffiness &amp; a little bit of magic.</p>
+  <p style="margin-top:.4rem;font-size:.8rem">Mon–Fri 8am–9pm &nbsp;|&nbsp; Sat–Sun 9am–10pm</p>
+  <div class="footer-links">
+    <a href="#">Instagram</a>
+    <a href="#">Menu PDF</a>
+    <a href="#">Location</a>
+    <a href="#">Contact Us</a>
+  </div>
+  <p style="margin-top:1.5rem;font-size:.75rem;opacity:.4">© 2026 Bunny Bites. All rights reserved. 🐾</p>
+</footer>
+
+<script>
+  // Add-to-cart little feedback
+  document.querySelectorAll('.add-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const orig = this.textContent;
+      this.textContent = '✓ Added!';
+      this.style.background = '#72D9A8';
+      setTimeout(() => {
+        this.textContent = orig;
+        this.style.background = '';
+      }, 1400);
+    });
+  });
+
+  // Scroll reveal
+  const revealEls = document.querySelectorAll('.reveal');
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
+    });
+  }, { threshold: 0.12 });
+  revealEls.forEach(el => obs.observe(el));
+
+  // Active nav highlight
+  const sections = document.querySelectorAll('section[id], div[id]');
+  const navLinks = document.querySelectorAll('.nav-links a');
+  window.addEventListener('scroll', () => {
+    let cur = '';
+    sections.forEach(s => { if (window.scrollY >= s.offsetTop - 100) cur = s.id; });
+    navLinks.forEach(a => {
+      a.classList.remove('active');
+      if (a.getAttribute('href') === '#' + cur) a.classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>
